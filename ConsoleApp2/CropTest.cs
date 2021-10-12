@@ -87,10 +87,41 @@ namespace ConsoleApp2
             //int CropDetailHeight = 256;
 
 
-            int CropDetailX = -58;
-            int CropDetailY = -58;
-            int CropDetailWidth = 1367;
-            int CropDetailHeight = 256;
+            //int CropDetailX = -58;
+            //int CropDetailY = -58;
+            //int CropDetailWidth = 1367;
+            //int CropDetailHeight = 256;
+
+
+            //int CropDetailX = -66;
+            //int CropDetailY = -94;
+            //int CropDetailWidth = 1582;
+            //int CropDetailHeight = 1011;
+
+
+
+            //int CropDetailX = 569;
+            //int CropDetailY = 153;
+            //int CropDetailWidth = 616;
+            //int CropDetailHeight = 459;
+
+
+
+            //int CropDetailX = 569;
+            //int CropDetailY = 153;
+            //int CropDetailWidth = 765;
+            //int CropDetailHeight = 459;
+
+            //int CropDetailX = -155;
+            //int CropDetailY = 541;
+            //int CropDetailWidth = 1605;
+            //int CropDetailHeight = 258;
+
+            int CropDetailX = -155;
+            int CropDetailY = -100;
+            int CropDetailWidth = 831;
+            int CropDetailHeight = 895;
+
 
             int cx = CropDetailX;
             int cy = CropDetailY;
@@ -109,8 +140,20 @@ namespace ConsoleApp2
             var sh = second.Height;
             var sw = second.Width;
 
-            var bw = sw + cx;
-            var bh = sh + cy;
+            var extraW = (CropDetailWidth - (sw + cx));
+            if (extraW < 0)
+            {
+                extraW = 0;
+            }
+
+            var extraH = (CropDetailHeight - (sh + cy));
+            if (extraH < 0)
+            {
+                extraH = 0;
+            }
+
+            var bw = sw + cx + extraW;
+            var bh = sh + cy + extraH;
 
             // Add the first image
             var bgImage = new MagickImage(MagickColor.FromRgba(red, green, blue, alpha), bw, bh);
