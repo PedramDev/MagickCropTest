@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp2
 {
+    /// <summary>
+    /// https://fengyuanchen.github.io/cropperjs/
+    /// 
+    /// </summary>
     public static class CropTest
     {
 
