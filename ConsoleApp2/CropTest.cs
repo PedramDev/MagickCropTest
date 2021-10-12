@@ -10,6 +10,46 @@ namespace ConsoleApp2
 {
     public static class CropTest
     {
+
+        private class MagicStruct
+        {
+            public MagicStruct(FileInfo file,
+                               string filePath,
+                               int? quality,
+                               int? width,
+                               int? height,
+                               int? cropX = null,
+                               int? cropY = null,
+                               int? cropWidth = null,
+                               int? cropHeight = null)
+            {
+                File = file;
+                FilePath = filePath;
+                Quality = quality;
+                Width = width;
+                Height = height;
+                CropDetailX = cropX;
+                CropDetailY = cropY;
+                CropDetailHeight = cropHeight;
+                CropDetailWidth = cropWidth;
+            }
+
+            public FileInfo File { get; }
+            public string FilePath { get; }
+            public int? Quality { get; }
+            public int? Width { get; }
+            public int? Height { get; }
+
+
+            public int? CropDetailX { get; }
+            public int? CropDetailY { get; }
+            public int? CropDetailHeight { get; }
+            public int? CropDetailWidth { get; }
+        }
+
+
+
+
         private static string Src = "";
         private static string DestNoExt = "";
         private static int Numb = 0;
@@ -29,42 +69,56 @@ namespace ConsoleApp2
             DestNoExt = baseDir + foolThere + filenameL + Numb + "-dest-";
         }
 
+
         public static void Test4()
         {
+            byte red = 0;
+            byte green = 0;
+            byte blue = 0;
+            byte alpha = 0;
+
+
+
             var t = 4;
 
-            int x = 889;
-            int y = -58;
-            int width = 1259;
-            int height = 256;
+            //int CropDetailX = 889;
+            //int CropDetailY = -58;
+            //int CropDetailWidth = 1259;
+            //int CropDetailHeight = 256;
 
-            int positiveX = x;
-            int positiveH = y;
-            if (x < 0)
+
+            int CropDetailX = -58;
+            int CropDetailY = -58;
+            int CropDetailWidth = 1367;
+            int CropDetailHeight = 256;
+
+            int cx = CropDetailX;
+            int cy = CropDetailY;
+            if (CropDetailX < 0)
             {
-                positiveX = x * -1;
+                cx = CropDetailX * -1;
             }
 
-            if (y < 0)
+            if (CropDetailY < 0)
             {
-                positiveH = y * -1;
+                cy = CropDetailY * -1;
             }
 
 
             var second = new MagickImage(Src);
-            var baseHeight = second.Height;
-            var baseWidth = second.Width;
+            var sh = second.Height;
+            var sw = second.Width;
 
-            var totalWidth = baseWidth + positiveX;
-            var totalHeight = baseHeight + positiveH;
+            var bw = sw + cx;
+            var bh = sh + cy;
 
             // Add the first image
-            var bgImage = new MagickImage(MagickColor.FromRgba(0, 0, 0, 0), totalWidth, totalHeight);
+            var bgImage = new MagickImage(MagickColor.FromRgba(red, green, blue, alpha), bw, bh);
 
             int appendMainImage_YPosition;
-            if (y < 0)
+            if (CropDetailY < 0)
             {
-                appendMainImage_YPosition = positiveH;
+                appendMainImage_YPosition = cy;
             }
             else
             {
@@ -73,9 +127,9 @@ namespace ConsoleApp2
 
 
             int appendMainImage_XPosition;
-            if (x < 0)
+            if (CropDetailX < 0)
             {
-                appendMainImage_XPosition = positiveX;
+                appendMainImage_XPosition = cx;
             }
             else
             {
@@ -86,20 +140,20 @@ namespace ConsoleApp2
 
 
 
-            var newXPosition = x;
-            var newYPosition = y;
+            var newXPosition = CropDetailX;
+            var newYPosition = CropDetailY;
 
-            if (y < 0)
+            if (CropDetailY < 0)
             {
                 newYPosition = 0;
             }
-            if (x < 0)
+            if (CropDetailX < 0)
             {
                 newXPosition = 0;
             }
 
             // Save the result
-            MagickGeometry geometry = new(newXPosition, newYPosition, width, height);
+            MagickGeometry geometry = new(newXPosition, newYPosition, CropDetailWidth, CropDetailHeight);
             bgImage.Crop(geometry);
             bgImage.RePage();
             bgImage.Write(DestNoExt + t + Ext);
