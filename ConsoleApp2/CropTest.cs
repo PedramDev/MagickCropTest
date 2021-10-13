@@ -1,9 +1,11 @@
 ﻿using ImageMagick;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConsoleApp2
@@ -73,13 +75,246 @@ namespace ConsoleApp2
             DestNoExt = baseDir + foolThere + filenameL + Numb + "-dest-";
         }
 
+        /// <summary>
+        /// Resize Next & (Related Ratio To Resize) Crop
+        /// </summary>
+        public static void Test6()
+        {
+            byte red = 255;
+            byte green = 255;
+            byte blue = 255;
+            byte alpha = 1;
 
+            var t = 5;
+
+            int CropDetailX = -57;
+            int CropDetailY = -146;
+            int CropDetailWidth = 1625;
+            int CropDetailHeight = 914;
+
+
+            int cx = CropDetailX;
+            int cy = CropDetailY;
+            if (CropDetailX < 0)
+            {
+                cx = CropDetailX * -1;
+            }
+
+            if (CropDetailY < 0)
+            {
+                cy = CropDetailY * -1;
+            }
+
+
+            var second = new MagickImage(Src);
+            var sh = second.Height;
+            var sw = second.Width;
+
+            var extraW = (CropDetailWidth - (sw + cx));
+            if (extraW < 0)
+            {
+                extraW = 0;
+            }
+
+            var extraH = (CropDetailHeight - (sh + cy));
+            if (extraH < 0)
+            {
+                extraH = 0;
+            }
+
+            var bw = sw + cx + extraW;
+            var bh = sh + cy + extraH;
+
+            // Add the first image
+            var bgImage = new MagickImage(MagickColor.FromRgb(red, green, blue), bw, bh);
+            //bgImage.Alpha(AlphaOption.Off);
+            int appendMainImage_YPosition;
+            if (CropDetailY < 0)
+            {
+                appendMainImage_YPosition = cy;
+            }
+            else
+            {
+                appendMainImage_YPosition = 0;
+            }
+
+
+            int appendMainImage_XPosition;
+            if (CropDetailX < 0)
+            {
+                appendMainImage_XPosition = cx;
+            }
+            else
+            {
+                appendMainImage_XPosition = 0;
+            }
+
+            bgImage.Composite(second, appendMainImage_XPosition, appendMainImage_YPosition, CompositeOperator.Src);
+
+
+
+            var newXPosition = CropDetailX;
+            var newYPosition = CropDetailY;
+
+            if (CropDetailY < 0)
+            {
+                newYPosition = 0;
+            }
+            if (CropDetailX < 0)
+            {
+                newXPosition = 0;
+            }
+
+
+
+            var newWidth = 802;
+            var newHeight = 5000;
+            var destPath = DestNoExt + t + ".jpg";//Ext;
+
+            bgImage.Format = MagickFormat.Jpg;
+            bgImage.Magnify();
+            bgImage.Write(destPath);
+
+            bgImage.Resize(newWidth, newHeight);
+
+            bgImage.Write(destPath);
+
+            // Save the result
+            MagickGeometry geometry = new(newXPosition, newYPosition, CropDetailWidth, CropDetailHeight);
+            bgImage.Crop(geometry);
+            bgImage.RePage();
+
+            bgImage.Write(destPath);
+            // bgImage.Write(DestNoExt + t + Ext);
+
+
+        }
+
+
+        /// <summary>
+        /// Crop & Next Resize
+        /// </summary>
+        public static void Test5()
+        {
+            byte red = 255;
+            byte green = 255;
+            byte blue = 255;
+            byte alpha = 1;
+
+            var t = 5;
+
+            int CropDetailX = -57;
+            int CropDetailY = -146;
+            int CropDetailWidth = 1625;
+            int CropDetailHeight = 914;
+
+
+            int cx = CropDetailX;
+            int cy = CropDetailY;
+            if (CropDetailX < 0)
+            {
+                cx = CropDetailX * -1;
+            }
+
+            if (CropDetailY < 0)
+            {
+                cy = CropDetailY * -1;
+            }
+
+
+            var second = new MagickImage(Src);
+            var sh = second.Height;
+            var sw = second.Width;
+
+            var extraW = (CropDetailWidth - (sw + cx));
+            if (extraW < 0)
+            {
+                extraW = 0;
+            }
+
+            var extraH = (CropDetailHeight - (sh + cy));
+            if (extraH < 0)
+            {
+                extraH = 0;
+            }
+
+            var bw = sw + cx + extraW;
+            var bh = sh + cy + extraH;
+
+            // Add the first image
+            var bgImage = new MagickImage(MagickColor.FromRgb(red, green, blue), bw, bh);
+
+            int appendMainImage_YPosition;
+            if (CropDetailY < 0)
+            {
+                appendMainImage_YPosition = cy;
+            }
+            else
+            {
+                appendMainImage_YPosition = 0;
+            }
+
+
+            int appendMainImage_XPosition;
+            if (CropDetailX < 0)
+            {
+                appendMainImage_XPosition = cx;
+            }
+            else
+            {
+                appendMainImage_XPosition = 0;
+            }
+
+            bgImage.Composite(second, appendMainImage_XPosition, appendMainImage_YPosition, CompositeOperator.Src);
+
+
+
+            var newXPosition = CropDetailX;
+            var newYPosition = CropDetailY;
+
+            if (CropDetailY < 0)
+            {
+                newYPosition = 0;
+            }
+            if (CropDetailX < 0)
+            {
+                newXPosition = 0;
+            }
+
+            // Save the result
+            MagickGeometry geometry = new(newXPosition, newYPosition, CropDetailWidth, CropDetailHeight);
+            bgImage.Crop(geometry);
+            bgImage.RePage();
+            // bgImage.Write(DestNoExt + t + Ext);
+
+            var newWidth = 802;
+            var newHeight = 5000;
+            #region Resize
+            var destPath = DestNoExt + t + Ext;
+
+
+            bgImage.Write(destPath);
+
+            bgImage.Format = MagickFormat.Jpg;
+            bgImage.Resize(newWidth, newHeight);
+
+            bgImage.Write(destPath);
+
+
+            #endregion
+        }
+
+
+
+        /// <summary>
+        /// Crop Works Greate
+        /// </summary>
         public static void Test4()
         {
-            byte red = 0;
-            byte green = 0;
-            byte blue = 0;
-            byte alpha = 0;
+            byte red = 255;
+            byte green = 255;
+            byte blue = 255;
+            byte alpha = 1;
 
 
 

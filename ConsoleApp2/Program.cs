@@ -11,7 +11,9 @@ namespace ConsoleApp2
             //CropTest.Test1(1);
             //CropTest.Test2(2);
             //CropTest.Test3(3);
-            CropTest.Test4();
+            //CropTest.Test4();
+            CropTest.Test5();
+            //CropTest.Test6();
         }
     }
 }
